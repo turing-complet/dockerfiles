@@ -1,5 +1,10 @@
 pipeline {
-  agent any
+  agent {
+    dockerfile {
+      filename 'cathode/Dockerfile'
+    }
+
+  }
   stages {
     stage('Hello') {
       steps {
