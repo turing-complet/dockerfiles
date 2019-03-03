@@ -1,14 +1,18 @@
 pipeline {
-  agent {
-    dockerfile {
-      filename 'cathode/Dockerfile'
-    }
-
-  }
+  agent any
   stages {
     stage('Hello') {
-      steps {
-        sh 'echo "Step 1"'
+      parallel {
+        stage('Hello') {
+          steps {
+            sh 'echo "Step 1"'
+          }
+        }
+        stage('') {
+          steps {
+            sh 'docker build cathode -t cathode:test'
+          }
+        }
       }
     }
   }
