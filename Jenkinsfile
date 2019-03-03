@@ -1,18 +1,23 @@
 pipeline {
-  agent any
+  agent {
+    node {
+      label 'docker'
+    }
+
+  }
   stages {
     stage('Hello') {
-      parallel {
-        stage('Hello') {
-          steps {
-            sh 'echo "Step 1"'
+      steps {
+        script {
+          echo "Starting build cathode"
+
+          def customImage = docker.build("cathode:${env.BUILD_ID}", "cathode")
+
+          customImage.inside {
+            echo "build cathode"
           }
         }
-        stage('') {
-          steps {
-            sh 'docker build cathode -t cathode:test'
-          }
-        }
+
       }
     }
   }
