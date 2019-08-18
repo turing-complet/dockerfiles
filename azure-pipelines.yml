@@ -1,0 +1,30 @@
+pool:
+  name: Azure Pipelines
+
+steps:
+- task: Docker@2
+  displayName: buildAndPush
+  inputs:
+    containerRegistry: 'jontestreg-connection'
+    repository: fish
+    Dockerfile: fish/Dockerfile
+    buildContext: fish
+
+- task: Docker@2
+  displayName: buildAndPush
+  inputs:
+    containerRegistry: 'jontestreg-connection'
+    repository: cathode
+    Dockerfile: cathode/Dockerfile
+    buildContext: cathode
+
+- task: Docker@2
+  displayName: buildAndPush
+  inputs:
+    containerRegistry: 'jontestreg-connection'
+    repository: xeyes
+    Dockerfile: xeyes/Dockerfile
+    buildContext: xeyes
+
+
+
