@@ -4,6 +4,7 @@ RUN apt-get update && \
     apt-get install --quiet --yes software-properties-common && \
     add-apt-repository --yes ppa:fish-shell/release-3 && \
     apt-get install --quiet --yes fish && \
+	# pyenv
 	apt-get install -y build-essential \
 	libssl-dev \
 	zlib1g-dev \
@@ -18,7 +19,18 @@ RUN apt-get update && \
 	tk-dev \
 	libffi-dev \
 	liblzma-dev \
-	python-openssl \
+	python-openssl && \
+	# ctags
+	apt-get install -y \
+	gcc make \
+	pkg-config autoconf automake \
+	python3-docutils \
+	libseccomp-dev \
+	libjansson-dev \
+	libyaml-dev \
+	libxml2-dev && \
+	# other packages
+	apt-get install -y \
 	locales \
 	locales-all \
 	tmux \
@@ -26,12 +38,16 @@ RUN apt-get update && \
 	neovim \
 	curl \
 	nodejs \
-	stow
-
+	stow \
+	sudo
 
 ENV LC_ALL "en_US.UTF-8"
 ENV LANG "en_US.UTF-8"
 ENV LANGUAGE "en_US.UTF-8"
+
+RUN git clone https://github.com/universal-ctags/ctags.git
+WORKDIR ctags
+RUN ./autogen.sh && ./configure && make && make install
 
 RUN useradd --create-home \
 	--shell /usr/bin/fish admin && \
@@ -39,10 +55,6 @@ RUN useradd --create-home \
 
 RUN chown -R admin: /home/admin
 USER admin
-
-SHELL ["fish", "--command"]
-# RUN chsh -s /usr/bin/fish
-ENV SHELL /usr/bin/fish
 
 RUN curl https://pyenv.run | bash
 
@@ -53,6 +65,8 @@ RUN git clone https://github.com/turing-complet/dotfiles.git
 RUN curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
     https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 
+SHELL ["fish", "--command"]
+ENV SHELL /usr/bin/fish
 
 WORKDIR dotfiles
 RUN stow fish
