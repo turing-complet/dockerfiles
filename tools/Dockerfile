@@ -38,6 +38,7 @@ RUN apt-get update && \
 	neovim \
 	curl \
 	nodejs \
+	npm \
 	stow \
 	sudo
 
@@ -48,6 +49,8 @@ ENV LANGUAGE "en_US.UTF-8"
 RUN git clone https://github.com/universal-ctags/ctags.git
 WORKDIR ctags
 RUN ./autogen.sh && ./configure && make && make install
+
+RUN npm install -g tldr
 
 RUN useradd --create-home \
 	--shell /usr/bin/fish admin && \
