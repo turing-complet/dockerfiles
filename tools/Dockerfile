@@ -65,8 +65,9 @@ ENV HOME /home/admin
 WORKDIR $HOME
 RUN git clone https://github.com/turing-complet/dotfiles.git
 
-RUN curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
-    https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+RUN curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim.appimage && \
+    chmod u+x nvim.appimage && \
+    mkdir code && mv nvim.appimage code
 
 SHELL ["fish", "--command"]
 ENV SHELL /usr/bin/fish
@@ -82,7 +83,7 @@ RUN pyenv install 3.8.3
 RUN pyenv global 3.8.3
 RUN pyenv virtualenv venv-tools
 RUN pyenv activate venv-tools
-RUN pip install black jedi pynvim
+RUN pip install black pynvim
 
 WORKDIR $HOME
 ENTRYPOINT [ "fish" ]
