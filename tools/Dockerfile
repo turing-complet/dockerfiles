@@ -50,7 +50,7 @@ RUN git clone https://github.com/universal-ctags/ctags.git
 WORKDIR ctags
 RUN ./autogen.sh && ./configure && make && make install
 
-RUN npm install -g tldr
+RUN npm install -g tldr pyright
 
 RUN useradd --create-home \
 	--shell /usr/bin/fish admin && \
@@ -83,8 +83,6 @@ RUN pyenv global 3.8.3
 RUN pyenv virtualenv venv-tools
 RUN pyenv activate venv-tools
 RUN pip install black jedi pynvim
-
-RUN vim +PlugInstall +qall
 
 WORKDIR $HOME
 ENTRYPOINT [ "fish" ]
