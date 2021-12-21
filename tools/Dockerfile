@@ -7,7 +7,7 @@ RUN apt-get update -y && apt-get upgrade -y
 RUN apt-get install -y software-properties-common build-essential
 
 RUN apt-get install -y \
-    python3.9 python3-pip && \
+    python3.9 python3.9-venv python3-pip && \
 	# ctags
 	apt-get install -y gcc make pkg-config autoconf automake \
 	python3-docutils libseccomp-dev libjansson-dev \
@@ -33,13 +33,10 @@ RUN useradd --create-home \
 
 RUN chown -R admin: /home/admin
 USER admin
-
-RUN sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
-
 ENV HOME /home/admin
 WORKDIR $HOME
-RUN git clone https://github.com/turing-complet/dotfiles.git
 
+RUN sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 RUN curl -LO https://github.com/neovim/neovim/releases/download/v0.6.0/nvim.appimage && \
     chmod u+x nvim.appimage && \
     ./nvim.appimage --appimage-extract
@@ -47,17 +44,17 @@ RUN curl -LO https://github.com/neovim/neovim/releases/download/v0.6.0/nvim.appi
 SHELL ["zsh", "-c"]
 ENV SHELL /usr/bin/zsh
 
+RUN git clone https://github.com/turing-complet/dotfiles.git
 WORKDIR $HOME/dotfiles
 RUN stow vim
 RUN stow nvim
 RUN stow tmux
 RUN rm ~/.zshrc && stow zsh
 
-RUN source ~/.zshrc
-# RUN pyenv virtualenv venv-tools
-# RUN pyenv activate venv-tools
-# RUN pip install black pynvim
-
-RUN alias nvim=$HOME/squashfs-root/usr/bin/nvim
 WORKDIR $HOME
+RUN source ~/.zshrc
+RUN python3 -m pip install nox tox ipython black pynvim
+
+RUN echo "let g:python3_host_prog = 'python3'" >> .vimrc
+RUN echo "alias nvim=$HOME/squashfs-root/usr/bin/nvim" >> .zshrc
 ENTRYPOINT [ "zsh" ]
