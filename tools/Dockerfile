@@ -14,7 +14,7 @@ RUN apt-get install -y \
 	libyaml-dev libxml2-dev && \
 	# other packages
 	apt-get install -y locales locales-all \
-	zsh tmux git neovim curl nodejs npm \
+	zsh tmux git curl nodejs npm \
 	stow jq sudo
 
 ENV LC_ALL "en_US.UTF-8"
@@ -47,15 +47,13 @@ RUN curl -LO https://github.com/neovim/neovim/releases/download/v0.6.0/nvim.appi
 SHELL ["zsh", "-c"]
 ENV SHELL /usr/bin/zsh
 
-WORKDIR dotfiles
+WORKDIR $HOME/dotfiles
 RUN stow vim
 RUN stow nvim
 RUN stow tmux
-# RUN stow zsh
+RUN rm ~/.zshrc && stow zsh
 
 RUN source ~/.zshrc
-# RUN pyenv install 3.10.1
-# RUN pyenv global 3.10.1
 # RUN pyenv virtualenv venv-tools
 # RUN pyenv activate venv-tools
 # RUN pip install black pynvim
